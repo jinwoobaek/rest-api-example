@@ -24,6 +24,7 @@ public class PostsService {
         return postsRepository.save(requestDto.toEntity()).getId();
     }
 
+    @Transactional(readOnly = true)
     public PostsResponseDto findById(Long id) {
         Posts entity = getOrElseThrow(id);
         return new PostsResponseDto(entity);
