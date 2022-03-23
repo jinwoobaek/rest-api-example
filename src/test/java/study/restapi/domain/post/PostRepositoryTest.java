@@ -4,18 +4,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import study.restapi.domain.Posts;
-import study.restapi.repository.PostsRepository;
+import study.restapi.domain.Post;
+import study.restapi.repository.PostRepository;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-class PostsRepositoryTest {
+class PostRepositoryTest {
 
     @Autowired
-    PostsRepository postRepository;
+    PostRepository postRepository;
 
     @AfterEach
     public void cleanup() {
@@ -28,19 +28,19 @@ class PostsRepositoryTest {
         String title = "테스트 게시글";
         String content = "테스트 본문";
 
-        postRepository.save(Posts.builder()
+        postRepository.save(Post.builder()
                 .title(title)
                 .content(content)
                 .author("jojoldu@gmail.com")
                 .build());
 
         //when
-        List<Posts> postsList = postRepository.findAll();
+        List<Post> postList = postRepository.findAll();
 
         //then
-        Posts posts = postsList.get(0);
-        assertThat(posts.getTitle()).isEqualTo(title);
-        assertThat(posts.getContent()).isEqualTo(content);
+        Post post = postList.get(0);
+        assertThat(post.getTitle()).isEqualTo(title);
+        assertThat(post.getContent()).isEqualTo(content);
     }
 
 }

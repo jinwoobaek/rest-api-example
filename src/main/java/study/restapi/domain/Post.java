@@ -12,7 +12,7 @@ import javax.persistence.Id;
 @Entity
 @NoArgsConstructor
 @Getter
-public class Posts {
+public class Post {
     @Id
     @GeneratedValue
     private Long id;
@@ -26,7 +26,7 @@ public class Posts {
     private String author;
 
     @Builder
-    public Posts(String title, String content, String author) {
+    public Post(String title, String content, String author) {
         this.title = title;
         this.content = content;
         this.author = author;

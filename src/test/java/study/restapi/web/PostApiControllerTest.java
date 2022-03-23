@@ -1,6 +1,5 @@
 package study.restapi.web;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,19 +9,17 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import study.restapi.domain.Posts;
-import study.restapi.repository.PostsRepository;
-import study.restapi.web.dto.PostsSaveRequestDto;
-import study.restapi.web.dto.PostsUpdateRequestDto;
+import study.restapi.domain.Post;
+import study.restapi.repository.PostRepository;
+import study.restapi.web.dto.PostSaveRequestDto;
+import study.restapi.web.dto.PostUpdateRequestDto;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PostsApiControllerTest {
+class PostApiControllerTest {
 
     @LocalServerPort
     private int port;
@@ -31,16 +28,16 @@ class PostsApiControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private PostsRepository postsRepository;
+    private PostRepository postRepository;
 
     @Test
-    void Posts_등록() {
+    void Post_등록() {
         //given
         String title = "spring";
         String content = "is good";
         String author = "jinwoo";
 
-        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+        PostSaveRequestDto requestDto = PostSaveRequestDto.builder()
                 .title(title)
                 .content(content)
                 .author(author)
@@ -55,35 +52,35 @@ class PostsApiControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
-        List<Posts> all = postsRepository.findAll();
+        List<Post> all = postRepository.findAll();
         assertThat(all.get(0).getTitle()).isEqualTo(title);
 
     }
 
     @Test
-    void Posts_수정() {
+    void Post_수정() {
         //given
-        Posts savedPosts = postsRepository.save(Posts.builder()
+        Post savedPost = postRepository.save(Post.builder()
                 .title("title")
                 .content("content")
                 .author("author")
                 .build());
 
-        Long updatedId = savedPosts.getId();
+        Long updatedId = savedPost.getId();
         System.out.println(updatedId);
 
 
         String expectedTitle = "title2";
         String expectedContent = "content2";
 
-        PostsUpdateRequestDto requestDto = PostsUpdateRequestDto.builder()
+        PostUpdateRequestDto requestDto = PostUpdateRequestDto.builder()
                 .title(expectedTitle)
                 .content(expectedContent)
                 .build();
 
         String url = "http://localhost:" + port + "/api/v1/posts/" + updatedId;
 
-        HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+        HttpEntity<PostUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
         //when
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
@@ -92,28 +89,28 @@ class PostsApiControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
-        List<Posts> all = postsRepository.findAll();
+        List<Post> all = postRepository.findAll();
         assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
         assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
     }
 
     @Test
-    void Posts_삭제() {
-        //given
-        Posts savedPosts = postsRepository.save(Posts.builder()
-                .title("title")
-                .content("content")
-                .author("author")
-                .build());
-
-        Long deleteId = savedPosts.getId();
-
-        String url = "http://localhost:" + port + "/api/v1/posts/" + deleteId;
-
-        //when
-        postsRepository.delete(savedPosts);
-
-        //then
+    void Post_삭제() {
+//        //given
+//        Post savedPost = postRepository.save(Post.builder()
+//                .title("title")
+//                .content("content")
+//                .author("author")
+//                .build());
+//
+//        Long deleteId = savedPost.getId();
+//
+//        String url = "http://localhost:" + port + "/api/v1/posts/" + deleteId;
+//
+//        //when
+//        postRepository.delete(savedPost);
+//
+//        //then
 
     }
 }
